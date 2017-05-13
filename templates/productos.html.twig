@@ -1,0 +1,40 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+            <a href="{{app.url_generator.generate('homepage') }}">Home</a>
+            {% if usuario==null %}
+                <a href="{{ app.url_generator.generate('login_vista') }}">Login</a>
+                <a href="{{ app.url_generator.generate('registrar') }}">Registrar</a>
+            {% else %}
+                {{ correo    }}
+                <a href="{{ app.url_generator.generate('log_out') }}">Log out</a>
+            {% endif %}
+        
+        
+            <table border="1" align="center">
+                <colgroup>
+                    <col id="categoria" />
+                    <col id="producto" />
+                    <col id="precio" />
+                    <col id="img_gde" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Categoría</th>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Imagen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pp in post_productos %} 
+                        <tr>
+                            <td>{{pp.Categoria_id}}</td>
+                            <td>{{pp.Nombre_Producto}}</td>
+                            <td>{{pp.Precio}}</td>
+                            <td><img src="{{ asset(pp.url_imagen_grande) }}""></img></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+{% endblock %}

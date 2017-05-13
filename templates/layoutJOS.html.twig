@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title '' %} - My Silex Application</title>
+
+        <link href="{{ asset('css/main.css') }}" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-XXXXXXXX-X']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+    </head>
+    <body class="pagPrincipal">
+        <div id="marcoI">
+            <div id="sesion">
+                <table align="left" border="0" height="5%" width="100%">
+                    <tr>
+                        <td><font color ="navy"><b>-----Sesión-----</b></font></td>
+                        <td width="300" align="left">
+                            <font color ="navy">
+                                <label>Bienvenid@:   <?php echo $nombre2['UNombre']; ?></label>
+                            </font>
+                        </td>
+                        <td width="120">
+                            <font color ="navy">
+                                <a href="./logout.php" style="text-decoration:none; color:navy">Salir</a>
+                            </font>
+                        </td>
+                    </tr>
+                </table>
+            <div id="encabezado">
+                <?php include("encabezado.php");?>
+            </div>
+            <div id="menu">
+                <h3 id="home"><font color ="gold">♪ Home Page</font></h3>
+                <h3 id="cursos"><font color ="gold">♪ Cursos</font></h3>
+                <h3 id="alumnos"><font color ="gold">♪ Alumnos</font></h3>
+                <h3 id="consultas"><font color ="gold">♪ Consultas</font></h3>
+                <h3 id="reportes"><font color ="gold">♪ Reportes</font></h3>
+                <h3 id="contacto"><font color ="gold">♪ Contacto</font></h3>
+
+            </div>
+            <div id="contenido">
+                {% block content %}{% endblock %}
+            </div>
+            <br class="clearfloat"/>
+            <div id="pie">
+                <p><font face="Papyrus" color= "gold", size=3>(C) 2016 - 402008176</font></p>
+            </div>
+        </div>        
+    </body>
+</html>

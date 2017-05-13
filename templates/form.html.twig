@@ -1,0 +1,25 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+
+	<form action="#" method="post">
+	    <table border="1" align="center">
+	    	<tr>
+	    		<td>Correo: </td>
+	    		<td>{{ form_widget(form.Correo) }}</td>
+	    	</tr>
+	    	<tr>
+	    		<td>Contraseña: </td>
+	    		<td>{{ form_widget(form.Clave) }}</td>
+	    	</tr>
+	    	<tr>
+	    		<td COLSPAN="2">{{ form_widget(form.billing_plan) }}</td>
+	    	</tr>
+	    	<tr><td>Vencimiento: </td>
+	    		<td>{{ form_widget(form.fechaVencimiento) }}</td>
+	    	</tr>
+	    	<tr><td COLSPAN="2"><input type="submit" name="submit" /></td></tr>
+	    </table>
+	</form>
+
+{% endblock %}

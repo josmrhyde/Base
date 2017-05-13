@@ -1,0 +1,50 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    Datos de productos! <br/>
+    Bienvenido!!!<br/>
+        <table border="1" align="center">
+            <colgroup>
+                <col id="sku" />
+                <col id="categoria" />
+                <col id="producto" />
+                <col id ="descripcion" />
+                <col id="precio" />
+                <col id="img_gde" />
+                <col id="col_cantidad">
+                <col id="btn_agregar"
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Categoría</th>
+                    <th>Producto</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Imagen</th>
+                    <th>Cantidad</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            
+                {% for pp in post_productos %}
+                    <form action="{{ app.url_generator.generate('agregar_item') }}" method="post">
+                    <tr>
+                        <td><input type="hidden" size="36" name="sku" id="sku" value="{{pp.sku}}">{{pp.sku}}</td>
+                        <td>{{pp.Categoria_id}}</td>
+                        <td>{{pp.Nombre_Producto}}</td>
+                        <td>{{pp.Descripcion}}</td>
+                        <td>{{pp.Precio}}</td>
+                        <td><img src="{{ asset(pp.url_imagen) }}""></img></td>
+                        <td><input type="text" size="1" name="cantidad" id="cantidad" value="{% if cantidad is defined %}{{ cantidad }}{% endif %}" </td>
+                        <td>
+                            <input type="submit" name="submit" value="Agregar"/>
+                        </td>
+                    </tr>
+                    </form>
+                {% endfor %}
+            </tbody>
+        </table>
+    
+{% endblock %}

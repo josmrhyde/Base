@@ -1,0 +1,48 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    Datos de productos! <br/>
+    Bienvenido!!!<br/>
+        <table border="1" align="center">
+            <colgroup>
+                <col id="sku" />
+                <col id="categoria" />
+                <col id="producto" />
+                <col id ="descripcion" />
+                <col id="precio" />
+                <col id="img_gde" />
+                <col id="col_cantidad">
+                <col id="btn_agregar"
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Categoría</th>
+                    <th>Producto</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Imagen</th>
+                    <th>Cantidad</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            <form action="{{ app.url_generator.generate('agregar_item2') }}" method="post">
+                {% for pp in post_productos %} 
+                    <tr>
+                        <td>{{pp.sku}}</td>
+                        <td>{{pp.Categoria_id}}</td>
+                        <td>{{pp.Nombre_Producto}}</td>
+                        <td>{{pp.Descripcion}}</td>
+                        <td>{{pp.Precio}}</td>
+                        <td><img src="{{ asset(pp.url_imagen) }}""></img></td>
+                        <td>{{ form_widget(form.Cantidad) }}</td>
+                        <td>{{ form_widget(form.submit) }}</td>
+                        
+                    </tr>
+                {% endfor %}
+            </form>
+            </tbody>
+        </table>
+    
+{% endblock %}

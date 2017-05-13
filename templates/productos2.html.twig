@@ -1,0 +1,129 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <!DOCTYPE html>
+	<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Viajes</title>
+
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+
+        <!-- Styles -->
+        <style>
+            html, body {
+                background-color: #fff;
+                color: #636b6f;
+                font-family: 'Raleway', sans-serif;
+                font-weight: 100;
+                height: 100vh;
+                margin: 0;
+            }
+
+            .full-height {
+                height: 100vh;
+            }
+
+            .flex-center {
+                align-items: center;
+                display: flex;
+                justify-content: center;
+            }
+
+            .position-ref {
+                position: relative;
+            }
+
+            .top-right {
+                position: absolute;
+                right: 10px;
+                top: 18px;
+            }
+
+            .content {
+                text-align: center;
+            }
+
+            .title {
+                font-size: 15px;
+            }
+
+            .links > a {
+                color: #636b6f;
+                padding: 0 25px;
+                font-size: 12px;
+                font-weight: 600;
+                letter-spacing: .1rem;
+                text-decoration: none;
+                text-transform: uppercase;
+            }
+
+            .m-b-md {
+                
+                margin-bottom: 00px;
+            }
+            {table
+                top: 38px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="flex-center position-ref full-height">
+            <div class="top-right links">
+                <a href="{{app.url_generator.generate('homepage') }}">Home</a>
+                {% if usuario==null %}
+                    <a href="{{ app.url_generator.generate('login_vista') }}">Login</a>
+                     <a href="{{ app.url_generator.generate('registrar') }}">Registrar</a>
+                {% else %}
+                 	{{ correo    }}
+                   	<a href="{{ app.url_generator.generate('log_out') }}">Log out</a>
+                {% endif %}
+            </div>
+            
+
+            <div class="content">
+                <div class="m-b-md">
+                <table border="1" align="center">
+                <colgroup>
+                    <col id="categoria" />
+                    <col id="producto" />
+                    <col id="precio" />
+                    <col id="img_gde" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Categoría</th>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Imagen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pp in post_productos %} 
+                        <tr>
+                            <td>{{pp.Categoria_id}}</td>
+                            <td>{{pp.Nombre_Producto}}</td>
+                            <td>{{pp.Precio}}</td>
+                            <td><img src="{{ asset(pp.url_imagen_grande) }}""></img></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                </div>
+
+                <div class="links">
+                        <a href="https://silex.sensiolabs.org/doc/2.0/">Documentación Silex</a>
+                        <a href="https://twig.sensiolabs.org/doc/2.x/">Documentación Twig</a>
+                        <a href="{{ app.url_generator.generate('productos_vista') }}">Catalogo</a>
+                        <a href="https://github.com/josmrhyde/tienda">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
+{% endblock %}

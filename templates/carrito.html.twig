@@ -1,0 +1,58 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <a href="{{app.url_generator.generate('homepage') }}">Home</a>
+    {% if usuario==null %}
+        <a href="{{ app.url_generator.generate('login_vista') }}">Login</a>
+        <a href="{{ app.url_generator.generate('registrar') }}">Registrar</a>
+    {% else %}
+       	{{ correo    }}
+       	<a href="{{ app.url_generator.generate('log_out') }}">Log out</a>
+    {% endif %}
+    
+<table border="1" align="center">
+            <colgroup>
+                <col id="img_chc" />
+                <col id="nombre" />
+                <col id="col_cantidad">
+                <col id="precio" />
+                <col id="subtotal" />
+                <col id="btn_actualizar"
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set total=0 %}
+                {% for pchk in post_check %}
+                    <form action="{{ app.url_generator.generate('carrito_actualizar') }}" method="post">
+                    
+                    <tr>
+                        <td><img src="{{ asset(pchk.url_imagen) }}""></img></td>
+                        <td>{{pchk.Nombre_Producto}}</td>
+                        <td>{{pchk.Cantidad}}</td>
+                        <td>{{pchk.Precio}}</td>
+                        <td>{{pchk.Cantidad * pchk.Precio}}</td>
+                        <td><input type="text" size="1" name="cantidad" id="cantidad" value="{% if cantidad is defined %}{{ cantidad }}{% endif %}" </td>
+                        <td>
+                            <input type="submit" name="submit" value="Actualizar"/>
+                        </td>
+                        {% set total= total + (pchk.Cantidad*pchk.Precio) %}
+                    </tr>
+                    </form>
+                {% endfor %}
+                    <tr><td COLSPAN="4" align="right">TOTAL</td><td>{{total}}</td>
+                    </tr>
+
+            
+            </tbody>
+        </table>
+
+{% endblock %}

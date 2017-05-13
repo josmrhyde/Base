@@ -1,0 +1,26 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    Datos personales! <br/><br/>
+
+    <table border="1" align="center">
+        <tr>
+            <td>Id Cliente: {{id_Cliente}}</td>
+            <td>Clave: {{clave}}</td>
+            <td>Nombre: {{nombre}}</td>
+            <td>Apellidos: {{apellido}}</td>
+        </tr>
+        <tr>
+            <td>Correo electrónico: {{correo}}</td>
+            <td>Calle: {{calle}}</td>
+            <td>Colonia: {{colonia}}</td>
+            <td>Código postal: {{cp}}</td>
+        </tr>
+        <tr>
+            <td>Ciudad: {{ciudad}}</td>
+            <td>País: {{pais}}</td>
+            <td>Teléfono: {{telefono}}</td>
+            <td>Fecha de creación: {{fecha_creacion}}</td>
+        </tr>
+    </table>
+{% endblock %}

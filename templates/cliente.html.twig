@@ -1,0 +1,56 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+	<form action="{{ app.url_generator.generate('registrar_item') }}" method="post" name="cliente">
+		<table style ="margin: 0 auto;", "text-align:center;">
+			<tr>
+				<td><p class="s" align="right">ID del Cliente: </p></td>
+				<td><input type="text" size="36" name="id_cliente" id="id_cliente" value="{% if id_cliente is defined %}{{ id_cliente }}{% endif %}" required></td>
+	        </tr>
+			<tr>
+				<td><p class="s" align="right">Clave: </p></td>
+				<td><input type="text" size="36" name="clave" id="clave" value="{% if clave is defined %}{{ clave }}{% endif %}" required></td>
+			</tr>
+			<tr>
+				<td><p class="s" align="right">Nombre(s): </p></td>
+				<td><input type="text" size="36" name="nombre" id="nombre" value="{% if nombre is defined %}{{ nombre }}{% endif %}" required></td>
+			</tr>
+	        <tr>
+				<td><p class="s" align="right">Apellidos: </p></td>
+				<td><input type="text" size="36" name="apellidos" id="apellidos" value="{% if apellidos is defined %}{{ apellidos }}{% endif %}" required</td>
+			</tr>
+			<tr>
+				<td><p class="s" align="right">Correo: </p></td>
+				<td><input type="text" size="36" name="correo" id="correo" value="{% if correo is defined %}{{ correo }}{% endif %}" required></td>
+			</tr>
+			<tr>
+				<td><p class="s" align="right">Calle: </p></td>
+				<td><input type="text" size="36" name="calle" id="calle" value="{% if calle is defined %}{{ calle }}{% endif %}" required></td>
+			</tr>			
+			<tr>
+				<td><p class="s" align="right">Colonia: </p></td>
+				<td><input type="text" size="36" name="colonia" id="colonia" value="{% if colonia is defined %}{{ colonia }}{% endif %}" required></td>
+			</tr>
+			<tr>
+				<td><p class="s" align="right">CP: </p></td>
+				<td><input type="text" size="36" name="cp" id="cp" value="{% if cp is defined %}{{ cp }}{% endif %}" required></td>
+			</tr>
+			<tr>
+				<td><p class="s" align="right">Ciudad: </p></td>
+				<td><input type="text" size="36" name="ciudad" id="ciudad" value="{% if ciudad is defined %}{{ ciudad }}{% endif %}" required></td>
+			</tr>
+			<tr>
+				<td><p class="s" align="right">País: </p></td>
+				<td><input type="text" size="36" name="pais" id="pais" value="{% if pais is defined %}{{ pais }}{% endif %}" required></td>
+			</tr>
+			<tr>
+				<td><p class="s" align="right">Teléfono: </p></td>
+				<td><input type="text" size="36" name="telefono" id="telefono" value="{% if telefono is defined %}{{ telefono }}{% endif %}" required></td>
+			</tr>
+			<tr>					
+				<td COLSPAN="2"><center><input type="submit" id="boton" name="btn_registrar" value="Registrar"></center></td>
+				
+			</tr>
+		</table>
+	</form>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+	{% set totalb=0 %}
+	{% for pchk in post_check %}
+		<td>Datos de la tabla PedidosCarrito: {{pchk.idPedido}} ----> de la tabla Ppedidos.sku {{pchk.sku}} --- Ppedidos.Cantidad {{pchk.Cantidad}} ---> de la tabla Productos.Nombre_Producto {{pchk.Nombre_Producto}} --- Productos.Precio {{pchk.Precio}} ---  Productos.url_imagen {{pchk.url_imagen}} </td><br/><br/>
+		{% set totalb= totalb+(pchk.Cantidad*pchk.Precio) %}
+    {% endfor %}
+    <br/> {{totalb}}
+{% endblock %}
