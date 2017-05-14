@@ -177,8 +177,67 @@ $app->get('/carrito', function(Request $request) use ($app){
 //♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪
 
 $app->post('/carrito', function(Request $request) use ($app){
-    return "Falta Programar!!!";
+    $actped = $app['db']->update('Ppedidos', array(
+        'Cantidad' => $request->get('cantidad')),
+        array('idPedido'=>$request->get('idpedido'))
+    );
+    return "Registro actualizado!!!";
 })->bind('carrito_actualizar');
+//♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪
+
+$app->get('/checkout', function(Request $request) use ($app){
+    $car = $app['session']->get('carrito');
+
+    $sqlcheck = "SELECT * FROM Carritos
+        INNER JOIN PedidosCarrito ON Carritos.idCarrito=$car and PedidosCarrito.idCarrito = $car 
+        INNER JOIN Ppedidos On PedidosCarrito.idPedido=Ppedidos.idPedido 
+        INNER JOIN Productos On Ppedidos.sku=Productos.sku";
+    $post_check = $app['db']->fetchAll($sqlcheck, array());
+
+    $form = $app['form.factory']->createBuilder(FormType::class)
+        ->add('Nombre_de_Tarjetahabiente', TextType::class, array(
+            'constraints'=>array(new Assert\NotBlank(), new Assert\Length(array('max'=>255)))))
+        ->add('Numero_de_Tarjeta_de_Credito', TextType::class, array(
+            'constraints'=>array(new Assert\NotBlank(), new Assert\Length(array('max'=>16)))))
+        ->add('CVC',  TextType::class, array(
+            'constraints'=>array(new Assert\NotBlank(), new Assert\Length(array('max'=>255)))))
+        ->add('fechaExpiracion', DateType::class)
+        ->add('Ordenar', SubmitType::class, [
+            'label' => 'Pagar'
+            ])
+        ->getForm();
+
+    $form->handleRequest($request);
+
+    if ($form->isValid()) {
+        $data = $form->getData();
+
+        // do something with the data
+            return "programar vista para checkout";
+        
+        // redirect somewhere
+        return $app->redirect($app['url_generator']->generate('carrito_vista'));
+    }
+
+    return $app['twig']->render('checkout.html.twig',array(
+        'post_check'=>$post_check,
+        'usuario'=>$app['session']->get('user'), 
+        'correo'=>$app['session']->get('email'),
+        'form' => $form->createView()
+        ));
+})->bind('checkout_vista');
+//♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪
+
+$app->post('/checkout', function(Request $request) use ($app){
+    $regord = $app['db']->insert('Ordenes', array(
+        'idCarrito'=>$app['session']->get('carrito'),
+        'id_Cliente' => $app['session']->get('user'),
+        'Numero_de_tarjeta' => $request->get('cantidad'),
+        'Nombre_Tarjetahabiente' => $request->get('Nombre_de_Tarjetahabiente'),
+        'Fecha_vencimiento' => $request->get('fechaExpiracion')
+    ));
+    return "Orden registrada.   Programar esta parte de la página";
+})->bind('checkout_ordenar');
 //♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪
 
 /*$app->get('/productos/:sku', function (Request $request) use($app){

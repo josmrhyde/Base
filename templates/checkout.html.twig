@@ -9,7 +9,28 @@
        	{{ correo    }}
        	<a href="{{ app.url_generator.generate('log_out') }}">Log out</a>
     {% endif %}
-    
+
+<form action="#" method="post">
+    <table border = "1" align="center">
+        <tr>
+            <td>Nombre de tarjetahabiente: </td>
+            <td>{{ form_widget(form.Nombre_de_Tarjetahabiente) }}</td>
+        </tr>
+        <tr>
+            <td>Número de Tarjeta de Crédito: </td>
+            <td>{{ form_widget(form.Numero_de_Tarjeta_de_Credito) }}</td>
+        </tr>
+        <tr>
+            <td>CVC: </td>
+            <td>{{ form_widget(form.CVC) }}</td>
+        </tr>
+        <tr><td>Vencimiento: </td>
+            <td>{{ form_widget(form.fechaExpiracion) }}</td>
+        </tr>
+        <tr><td COLSPAN="2">{{ form_widget(form.Ordenar) }}</td></tr>
+    </table>
+</form>
+
 <table border="1" align="center">
             <colgroup>
                 <col id="img_chc" />
@@ -17,7 +38,6 @@
                 <col id="col_cantidad">
                 <col id="precio" />
                 <col id="subtotal" />
-                <col id="btn_actualizar">
             </colgroup>
             <thead>
                 <tr>
@@ -26,33 +46,21 @@
                     <th>Cantidad</th>
                     <th>Precio Unitario</th>
                     <th>Subtotal</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {% set total=0 %}
                 {% for pchk in post_check %}
-                    <form action="{{ app.url_generator.generate('carrito_actualizar') }}" method="post">
-                    
                     <tr>
                         <td><img src="{{ asset(pchk.url_imagen) }}""></img></td>
                         <td>{{pchk.Nombre_Producto}}</td>
                         <td>{{pchk.Cantidad}}</td>
                         <td>{{pchk.Precio}}</td>
                         <td>{{pchk.Cantidad * pchk.Precio}}</td>
-                        <td><input type="text" size="1" name="cantidad" id="cantidad" value="{% if cantidad is defined %}{{ cantidad }}{% endif %}" </td>
-                        <td>
-                            <input type="submit" name="submit" value="Actualizar"/>
-                        </td>
                         {% set total= total + (pchk.Cantidad*pchk.Precio) %}
-                        <td type="hidden"><input type="hidden" size="36" name="idpedido" id="idpedido" value="{{pchk.idPedido}}"></td>
                     </tr>
-                    </form>
                 {% endfor %}
                     <tr><td COLSPAN="4" align="right">TOTAL</td><td>{{total}}</td>
             </tbody>
         </table>
-
-        <a href="{{ app.url_generator.generate('checkout_vista') }}">Checkout</a>
-
 {% endblock %}
