@@ -21,6 +21,9 @@ use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Conekta\Client;
+
+
 //Request::setTrustedProxies(array('127.0.0.1'));
 
 $app->get('/', function (Request $request) use ($app) {
@@ -219,7 +222,7 @@ $app->get('/checkout', function(Request $request) use ($app){
         return $app->redirect($app['url_generator']->generate('carrito_vista'));
     }
 
-    return $app['twig']->render('checkout.html.twig',array(
+    return $app['twig']->render('checkoutCONEKTA.html.twig',array(
         'post_check'=>$post_check,
         'usuario'=>$app['session']->get('user'), 
         'correo'=>$app['session']->get('email'),
@@ -229,14 +232,119 @@ $app->get('/checkout', function(Request $request) use ($app){
 //♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪
 
 $app->post('/checkout', function(Request $request) use ($app){
-    $regord = $app['db']->insert('Ordenes', array(
+    require_once("../conekta-php/lib/Conekta.php");
+    \Conekta\Conekta::setApiKey("key_eYvWV7gSDkNYXsmr");
+    \Conekta\Conekta::setApiVersion("2.0.0");
+    \Conekta\Conekta::setLocale('es');
+
+    $car = $app['session']->get('carrito');
+    $sqlcheck = "SELECT * FROM Carritos
+        INNER JOIN PedidosCarrito ON Carritos.idCarrito=$car and PedidosCarrito.idCarrito = $car 
+        INNER JOIN Ppedidos On PedidosCarrito.idPedido=Ppedidos.idPedido 
+        INNER JOIN Productos On Ppedidos.sku=Productos.sku";
+    $post_check = $app['db']->fetchAll($sqlcheck, array());
+
+    /*$client = New Client();
+    $url = "http://api.openweathermap.org/data/2.5/weather?id=3530597&APPID=$api_key&units=metric";
+    $response = $client->get($url);
+    $cuerpo = $response->getBody();
+    return new Response($cuerpo, 200, array('content-type'=>'application/json'));*/
+
+    try {
+        $customer=\Conekta\Customer::create(
+            array(
+              "name" => "Fulanito Pérez",
+              "email" => "fulanito@conekta.com",
+              "phone" => "+52181818181",
+              "payment_sources" => array(
+                array(
+                    "type" => "card",
+                    "token_id" => "tok_test_visa_4242"
+                )
+              )//payment_sources
+            )//customer
+          );
+        } catch (\Conekta\ErrorList $errorList){
+          foreach($errorList->details as &$errorDetail) {
+            echo $errorDetail->getMessage() . "\r\n";
+          }
+        }
+
+    try{
+        $order = \Conekta\Order::create(
+            array(
+              "line_items" => array(
+                array(
+                  "name" => "Tacos",
+                  "unit_price" => 1000,
+                  "quantity" => 12
+                )//first line_item
+              ), //line_items
+              "shipping_lines" => array(
+                array(
+                  "amount" => 1500,
+                   "carrier" => "mi compañia"
+                )
+              ), //shipping_lines
+              "currency" => "MXN",
+              "customer_info" => array(
+                "customer_id" => "cus_2fkJPFjQKABcmiZWz"
+              ), //customer_info
+              "shipping_contact" => array(
+                "phone" => "+52181818181",
+                "receiver" => "Bruce Wayne",
+                "address" => array(
+                  "street1" => "Calle 123 int 2 Col. Chida",
+                  "city" => "Cuahutemoc",
+                  "state" => "Ciudad de Mexico",
+                  "country" => "MX",
+                  "postal_code" => "06100",
+                  "residential" => true
+                )//address
+              ), //shipping_contact
+              "metadata" => array("reference" => "12987324097", "more_info" => "lalalalala"),
+              "charges" => array(
+                  array(
+                      "payment_method" => array(
+                        "payment_source_id" => "card_2fkJPFjQKABcmiZWy",
+                              "type" => "card"
+                      )//payment_method
+                  ) //first charge
+              ) //charges
+            )//order
+          );
+        }catch (\Conekta\ErrorList $errorList){
+          foreach($errorList->details as &$errorDetail) {
+            echo $errorDetail->getMessage() . "\r\n";
+          }
+        }
+
+    /*$regord = $app['db']->insert('Ordenes', array(
         'idCarrito'=>$app['session']->get('carrito'),
         'id_Cliente' => $app['session']->get('user'),
-        'Numero_de_tarjeta' => $request->get('cantidad'),
+        'Numero_de_tarjeta' => $request->get('Numero_de_Tarjeta_de_Credito'),
         'Nombre_Tarjetahabiente' => $request->get('Nombre_de_Tarjetahabiente'),
         'Fecha_vencimiento' => $request->get('fechaExpiracion')
-    ));
-    return "Orden registrada.   Programar esta parte de la página";
+    ));*/
+    
+    //return "Orden registrada.   Programar esta parte de la página";
+
+    return "pasó";
+    echo "ID: ". $order->id;
+    echo "Status: ". $order->payment_status;
+    echo "$". $order->amount/100 . $order->currency;
+    echo "Order";
+    echo $order->line_items[0]->quantity .
+          "-". $order->line_items[0]->name .
+          "- $". $order->line_items[0]->unit_price/100;
+    echo "Payment info";
+    echo "CODE:". $order->charges[0]->payment_method->auth_code;
+    echo "Card info:" .
+          "- ". $order->charges[0]->payment_method->name .
+          "- <strong><strong>". $order->charges[0]->payment_method->last4 .
+          "- ". $order->charges[0]->payment_method->brand .
+          "- ". $order->charges[0]->payment_method->type;
+
 })->bind('checkout_ordenar');
 //♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪
 
@@ -305,6 +413,13 @@ $app->get('/login', function (Request $request) use ($app) {
         //  $app['session']->set('user', array('username' => $username));
         $app['session']->set('user', $post['id_Cliente']);
         $app['session']->set('email', $post['Correo'] );
+        $app['session']->set('nom', $post['Nombre'] );
+        $app['session']->set('tel', $post['Telefono'] );
+        $app['session']->set('calle', $post['Calle'] );
+        $app['session']->set('col', $post['Colonia'] );
+        $app['session']->set('city', $post['Ciudad'] );
+        $app['session']->set('pais', $post['Pais'] );
+        $app['session']->set('cp', $post['CP'] );
         $sqlcarrito="SELECT * FROM Carritos";
         $regped = $app['db']->insert('Carritos', array(
             'Cliente_id'=> $app['session']->get('user'))

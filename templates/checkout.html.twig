@@ -1,6 +1,8 @@
 {% extends "layout.html.twig" %}
 
 {% block content %}
+    <script type="text/javascript" src="https://conektaapi.s3.amazonaws.com/v0.3.2/js/conekta.js"></script>
+    
     <a href="{{app.url_generator.generate('homepage') }}">Home</a>
     {% if usuario==null %}
         <a href="{{ app.url_generator.generate('login_vista') }}">Login</a>

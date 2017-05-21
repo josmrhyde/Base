@@ -1,0 +1,107 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://conektaapi.s3.amazonaws.com/v0.3.2/js/conekta.js"></script>
+
+    <script type="text/javascript" >
+        Conekta.setPublishableKey('key_KJysdbf6PotS2ut2');
+        
+        var conektaSuccessResponseHandler = function(token) {
+            var $form = $("#card-form");
+            //Inserta el token_id en la forma para que se envíe al servidor
+            $form.append($("<input type="hidden" id="conektaTokenId">").val(token.id));
+            $form.get(0).submit(); //Hace submit
+        };
+        
+        var conektaErrorResponseHandler = function(response) {
+            var $form = $("#card-form");
+            $form.find(".card-errors").text(response.message_to_purchaser);
+            $form.find("button").prop("disabled", false);
+        };
+
+        //jQuery para que genere el token después de dar click en submit
+        $(function () {
+            $("#card-form").submit(function(event) {
+                var $form = $(this);
+                // Previene hacer submit más de una vez
+                $form.find("button").prop("disabled", true);
+                Conekta.token.create($form, conektaSuccessResponseHandler, conektaErrorResponseHandler);
+                return false;
+            });
+        });
+</script>
+
+    <a href="{{app.url_generator.generate('homepage') }}">Home</a>
+    {% if usuario==null %}
+        <a href="{{ app.url_generator.generate('login_vista') }}">Login</a>
+        <a href="{{ app.url_generator.generate('registrar') }}">Registrar</a>
+    {% else %}
+       	{{ correo    }}
+       	<a href="{{ app.url_generator.generate('log_out') }}">Log out</a>
+    {% endif %}
+
+<form action="{{ app.url_generator.generate('checkout_ordenar') }}" method="POST" id="card-form">
+  <span class="card-errors"></span>
+  <div>
+    <label>
+      <span>Nombre del tarjetahabiente</span>
+      <input type="text" size="20" data-conekta="card[name]">
+    </label>
+  </div>
+  <div>
+    <label>
+      <span>Número de tarjeta de crédito</span>
+      <input type="text" size="20" data-conekta="card[number]">
+    </label>
+  </div>
+  <div>
+    <label>
+      <span>CVC</span>
+      <input type="text" size="4" data-conekta="card[cvc]">
+    </label>
+  </div>
+  <div>
+    <label>
+      <span>Fecha de expiración (MM/AAAA)</span>
+      <input type="text" size="2" data-conekta="card[exp_month]">
+    </label>
+    <span>/</span>
+    <input type="text" size="4" data-conekta="card[exp_year]">
+  </div>
+  <button type="submit">Crear token</button>
+</form>
+
+<table border="1" align="center">
+            <colgroup>
+                <col id="img_chc" />
+                <col id="nombre" />
+                <col id="col_cantidad">
+                <col id="precio" />
+                <col id="subtotal" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set total=0 %}
+                {% for pchk in post_check %}
+                    <tr>
+                        <td><img src="{{ asset(pchk.url_imagen) }}""></img></td>
+                        <td>{{pchk.Nombre_Producto}}</td>
+                        <td>{{pchk.Cantidad}}</td>
+                        <td>{{pchk.Precio}}</td>
+                        <td>{{pchk.Cantidad * pchk.Precio}}</td>
+                        {% set total= total + (pchk.Cantidad*pchk.Precio) %}
+                    </tr>
+                {% endfor %}
+                    <tr><td COLSPAN="4" align="right">TOTAL</td><td>{{total}}</td>
+            </tbody>
+        </table>
+{% endblock %}
