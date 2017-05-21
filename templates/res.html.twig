@@ -1,0 +1,17 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    ID: {{id}} <br/>
+    Status: {{status}} <br/>
+    Pago: $ {{total}} <br/>
+    Cantidad: {{cant}} <br/>
+    Producto: {{prod}} <br/>
+    Precio unitario: $ {{p_unit}} <br/>
+    <br/>---Información del pago--- <br/>
+    Código de autorización: {{cod_aut}} <br/>
+    <br/>***Información de Tarjeta*** <br/>
+    Nombre del Tarjetahabiente: {{nom_t_habiente}} <br/>
+    Últimos 4 dígitos de tarjeta: <strong>***{{met_pag_last4}} </strong><br/>
+    Marca: {{marca}} <br/>
+    Tipo: {{tipo}} <br/>
+{% endblock %}

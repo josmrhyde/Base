@@ -197,7 +197,7 @@ $app->get('/checkout', function(Request $request) use ($app){
         INNER JOIN Productos On Ppedidos.sku=Productos.sku";
     $post_check = $app['db']->fetchAll($sqlcheck, array());
 
-    $form = $app['form.factory']->createBuilder(FormType::class)
+    /*$form = $app['form.factory']->createBuilder(FormType::class)
         ->add('Nombre_de_Tarjetahabiente', TextType::class, array(
             'constraints'=>array(new Assert\NotBlank(), new Assert\Length(array('max'=>255)))))
         ->add('Numero_de_Tarjeta_de_Credito', TextType::class, array(
@@ -220,13 +220,13 @@ $app->get('/checkout', function(Request $request) use ($app){
         
         // redirect somewhere
         return $app->redirect($app['url_generator']->generate('carrito_vista'));
-    }
+    }*/
 
     return $app['twig']->render('checkoutCONEKTA.html.twig',array(
         'post_check'=>$post_check,
         'usuario'=>$app['session']->get('user'), 
         'correo'=>$app['session']->get('email'),
-        'form' => $form->createView()
+        //'form' => $form->createView()
         ));
 })->bind('checkout_vista');
 //♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪
@@ -255,7 +255,7 @@ $app->post('/checkout', function(Request $request) use ($app){
             array(
               "name" => "Fulanito Pérez",
               "email" => "fulanito@conekta.com",
-              "phone" => "+52181818181",
+              "phone" => "52181818181",
               "payment_sources" => array(
                 array(
                     "type" => "card",
@@ -291,7 +291,7 @@ $app->post('/checkout', function(Request $request) use ($app){
                 "customer_id" => "cus_2fkJPFjQKABcmiZWz"
               ), //customer_info
               "shipping_contact" => array(
-                "phone" => "+52181818181",
+                "phone" => "52181818181",
                 "receiver" => "Bruce Wayne",
                 "address" => array(
                   "street1" => "Calle 123 int 2 Col. Chida",
@@ -329,21 +329,35 @@ $app->post('/checkout', function(Request $request) use ($app){
     
     //return "Orden registrada.   Programar esta parte de la página";
 
-    return "pasó";
-    echo "ID: ". $order->id;
-    echo "Status: ". $order->payment_status;
-    echo "$". $order->amount/100 . $order->currency;
-    echo "Order";
-    echo $order->line_items[0]->quantity .
-          "-". $order->line_items[0]->name .
-          "- $". $order->line_items[0]->unit_price/100;
-    echo "Payment info";
-    echo "CODE:". $order->charges[0]->payment_method->auth_code;
-    echo "Card info:" .
-          "- ". $order->charges[0]->payment_method->name .
-          "- <strong><strong>". $order->charges[0]->payment_method->last4 .
-          "- ". $order->charges[0]->payment_method->brand .
-          "- ". $order->charges[0]->payment_method->type;
+    //return new Response($order, 200, array('content-type'=>'application/json'));
+    //return $app['twig']->render('res.html.twig', array('order'=>$order));
+    return $app['twig']->render('res.html.twig', array(
+        'id'=>$order->id,
+        'status'=>$order->payment_status,
+        'total'=>$order->amount/100 . $order->currency,
+        'cant'=>$order->line_items[0]->quantity,
+        'prod'=>$order->line_items[0]->name,
+        'p_unit'=>$order->line_items[0]->unit_price/100,
+        'cod_aut'=>$order->charges[0]->payment_method->auth_code,
+        'nom_t_habiente'=>$order->charges[0]->payment_method->name,
+        'met_pag_last4'=>$order->charges[0]->payment_method->last4,
+        'marca'=>$order->charges[0]->payment_method->brand,
+        'tipo'=>$order->charges[0]->payment_method->type
+        )
+    );
+    /*return "ID: " . $order->id.
+        "  Status: " . $order->payment_status.
+        " $ ". $order->amount/100 . $order->currency.
+        " Order ". $order->line_items[0]->quantity.
+        " - ". $order->line_items[0]->name.
+        " - $ ". $order->line_items[0]->unit_price/100 //aquí no lleva punto por tomar el sistema el numero 100 con punto decimal y no una separación
+        ." Payment info ".
+        " CODE: ". $order->charges[0]->payment_method->auth_code.
+        " Card info:".
+        "- ". $order->charges[0]->payment_method->name.
+        "- <strong><strong>". $order->charges[0]->payment_method->last4.
+        "- ". $order->charges[0]->payment_method->brand.
+        "- ". $order->charges[0]->payment_method->type;*/
 
 })->bind('checkout_ordenar');
 //♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪♪
