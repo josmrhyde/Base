@@ -46,28 +46,32 @@
   <div>
     <label>
       <span>Nombre del tarjetahabiente</span>
-      <input type="text" size="20" data-conekta="card[name]">
+      <input type="text" size="20" data-conekta="card[name]" name="nomt">
     </label>
   </div>
   <div>
     <label>
       <span>Número de tarjeta de crédito</span>
-      <input type="text" size="20" data-conekta="card[number]">
+      <input type="text" size="20" data-conekta="card[number]" name="nt">
     </label>
   </div>
   <div>
     <label>
       <span>CVC</span>
-      <input type="text" size="4" data-conekta="card[cvc]">
+      <input type="text" size="4" data-conekta="card[cvc]" name="cvc">
     </label>
   </div>
   <div>
     <label>
-      <span>Fecha de expiración (MM/AAAA)</span>
-      <input type="text" size="2" data-conekta="card[exp_month]">
+      <span>Fecha de creación</span>
+      <input type="date" size="4" data-conekta="card[exp_month]" name="fec_cre">
     </label>
-    <span>/</span>
-    <input type="text" size="4" data-conekta="card[exp_year]">
+  </div>
+  <div>
+    <label>
+    <span>Fecha de vencimiento</span>
+    <input type="date" size="4" data-conekta="card[exp_year]" name="fec_exp">
+    </label>
   </div>
   <button type="submit">Crear token</button>
 </form>

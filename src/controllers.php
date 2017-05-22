@@ -219,7 +219,7 @@ $app->get('/checkout', function(Request $request) use ($app){
             return "programar vista para checkout";
         
         // redirect somewhere
-        return $app->redirect($app['url_generator']->generate('carrito_vista'));
+        return $app->redirect($app['url_generator']->generate('checkout_ordenar'));
     }*/
 
     return $app['twig']->render('checkoutCONEKTA.html.twig',array(
@@ -243,12 +243,6 @@ $app->post('/checkout', function(Request $request) use ($app){
         INNER JOIN Ppedidos On PedidosCarrito.idPedido=Ppedidos.idPedido 
         INNER JOIN Productos On Ppedidos.sku=Productos.sku";
     $post_check = $app['db']->fetchAll($sqlcheck, array());
-
-    /*$client = New Client();
-    $url = "http://api.openweathermap.org/data/2.5/weather?id=3530597&APPID=$api_key&units=metric";
-    $response = $client->get($url);
-    $cuerpo = $response->getBody();
-    return new Response($cuerpo, 200, array('content-type'=>'application/json'));*/
 
     try {
         $customer=\Conekta\Customer::create(
@@ -319,13 +313,14 @@ $app->post('/checkout', function(Request $request) use ($app){
           }
         }
 
-    /*$regord = $app['db']->insert('Ordenes', array(
+    $regord = $app['db']->insert('Ordenes', array(
         'idCarrito'=>$app['session']->get('carrito'),
         'id_Cliente' => $app['session']->get('user'),
-        'Numero_de_tarjeta' => $request->get('Numero_de_Tarjeta_de_Credito'),
-        'Nombre_Tarjetahabiente' => $request->get('Nombre_de_Tarjetahabiente'),
-        'Fecha_vencimiento' => $request->get('fechaExpiracion')
-    ));*/
+        'Numero_de_tarjeta' => $request->get('nt'),
+        'Nombre_Tarjetahabiente' => $request->get('nomt'),
+        'Fecha_creacion'=> $request->get('fec_cre'),
+        'Fecha_vencimiento' => $request->get('fec_exp')        
+    ));
     
     //return "Orden registrada.   Programar esta parte de la página";
 
@@ -342,7 +337,12 @@ $app->post('/checkout', function(Request $request) use ($app){
         'nom_t_habiente'=>$order->charges[0]->payment_method->name,
         'met_pag_last4'=>$order->charges[0]->payment_method->last4,
         'marca'=>$order->charges[0]->payment_method->brand,
-        'tipo'=>$order->charges[0]->payment_method->type
+        'tipo'=>$order->charges[0]->payment_method->type,
+        'numt'=>$request->get('nt'),
+        'nomth'=>$request->get('nomt'),
+        'cvc'=>$request->get('cvc'),
+        'fec_cre'=>$request->get('fec_cre'),
+        'fec_exp'=>$request->get('fec_exp')
         )
     );
     /*return "ID: " . $order->id.
